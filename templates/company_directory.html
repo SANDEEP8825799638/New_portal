@@ -1,0 +1,356 @@
+{% extends 'base_template2.html' %}
+
+{% block title %}Employee Directory - Concrete OEM{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --oem-orange: #ea580c;
+        --oem-orange-light: #fff7ed;
+        --oem-orange-hover: #c2410c;
+    }
+
+    .zoho-main-container {
+        overflow-y: auto !important;
+    }
+
+    .directory-wrapper {
+        background: #ffffff;
+        border-radius: 14px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+        padding: 26px 28px;
+        min-height: calc(100vh - var(--topbar-height) - 30px);
+        position: relative;
+    }
+
+    /* Top decorative orange gradient stripe */
+    .directory-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        border-top-left-radius: 14px;
+        border-top-right-radius: 14px;
+        background: linear-gradient(90deg, #ea580c 0%, #fb923c 60%, #143b82 100%);
+    }
+
+    .dir-header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 22px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    /* Back Button */
+    .btn-back-home {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background-color: var(--oem-orange-light);
+        border: 1px solid #fed7aa;
+        color: var(--oem-orange);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+    }
+
+    .btn-back-home:hover {
+        background-color: var(--oem-orange);
+        border-color: var(--oem-orange);
+        color: #ffffff;
+        transform: translateX(-3px);
+        box-shadow: 0 4px 10px rgba(234, 88, 12, 0.25);
+    }
+
+    .dir-heading h4 {
+        font-size: 19px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .dir-heading .count-badge {
+        font-size: 11px;
+        background: var(--oem-orange-light);
+        color: var(--oem-orange);
+        border: 1px solid #ffedd5;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-weight: 700;
+    }
+
+    .dir-heading p {
+        font-size: 13px;
+        color: #64748b;
+        margin: 3px 0 0 0;
+    }
+
+    /* Search Input with Orange Focus */
+    .search-input-group {
+        position: relative;
+        width: 100%;
+        max-width: 360px;
+    }
+
+    .search-input-group i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 14px;
+        transition: color 0.15s;
+    }
+
+    .search-input-group input {
+        width: 100%;
+        padding: 9px 14px 9px 38px;
+        font-size: 13.5px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        outline: none;
+        background-color: #fafbfc;
+        transition: all 0.2s ease;
+    }
+
+    .search-input-group input:focus {
+        background-color: #ffffff;
+        border-color: var(--oem-orange);
+        box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+    }
+
+    .search-input-group input:focus + i {
+        color: var(--oem-orange);
+    }
+
+    /* Table Styling */
+    .directory-table thead th {
+        background-color: #f8fafc;
+        color: #475569;
+        font-size: 11.5px;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #edf2f7;
+        padding: 13px 18px;
+    }
+
+    .directory-table tbody tr {
+        transition: background-color 0.15s ease;
+    }
+
+    .directory-table tbody tr:hover {
+        background-color: #fffbf7; /* subtle orange glow on hover */
+    }
+
+    .directory-table tbody td {
+        padding: 14px 18px;
+        font-size: 13.5px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+        color: #1e293b;
+    }
+
+    /* Emp ID with soft border */
+    .emp-id-pill {
+        font-size: 12px;
+        font-weight: 700;
+        background: #f8fafc;
+        color: #334155;
+        padding: 4px 9px;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        letter-spacing: 0.2px;
+    }
+
+    /* Orange Avatar Box */
+    .emp-avatar-box {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #fb923c, #ea580c);
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 14px;
+        margin-right: 12px;
+        box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
+        flex-shrink: 0;
+    }
+
+    /* Department Pill */
+    .dept-pill {
+        font-size: 12px;
+        font-weight: 600;
+        color: #475569;
+        background-color: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+
+    /* Contact Phone with Orange Icon */
+    .phone-badge {
+        color: #1e293b;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 12px;
+        border-radius: 8px;
+        background-color: #fafbfc;
+        border: 1px solid #e2e8f0;
+        transition: all 0.15s ease;
+    }
+
+    .phone-badge i {
+        color: var(--oem-orange);
+        font-size: 12px;
+        transition: transform 0.15s ease;
+    }
+
+    .phone-badge:hover {
+        background-color: var(--oem-orange-light);
+        border-color: #fdba74;
+        color: var(--oem-orange);
+    }
+
+    .phone-badge:hover i {
+        transform: scale(1.15);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="directory-wrapper">
+    <!-- Header with Back Button and Live Search -->
+    <div class="dir-header-section">
+        <div class="d-flex align-items-center gap-3">
+            <a href="/" class="btn-back-home" title="Back to Dashboard">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div class="dir-heading">
+                <h4>
+                    Employee Directory
+                    <span class="count-badge" id="totalEmpCount">{{ employees|length }} Members</span>
+                </h4>
+                <p>Find and connect with staff across Concrete OEM units</p>
+            </div>
+        </div>
+
+        <div class="search-input-group">
+            <input
+                type="text"
+                id="dirSearchInput"
+                placeholder="Search by ID, Name, or Department..."
+                onkeyup="filterDirectory()"
+            />
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+    </div>
+
+    <!-- Directory Table -->
+    <div class="table-responsive">
+        <table class="table directory-table">
+            <thead>
+                <tr>
+                    <th>Emp ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>Contact Number</th>
+                </tr>
+            </thead>
+            <tbody id="directoryTableBody">
+                {% for emp in employees %}
+                <tr>
+                    <td><span class="emp-id-pill">{{ emp.id }}</span></td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="emp-avatar-box">{{ emp.name[0] }}</div>
+                            <span class="fw-semibold emp-name">{{ emp.name }}</span>
+                        </div>
+                    </td>
+                    <td class="text-secondary">{{ emp.role }}</td>
+                    <td><span class="dept-pill emp-dept">{{ emp.department }}</span></td>
+                    <td>
+                        <a href="tel:{{ emp.phone }}" class="phone-badge">
+                            <i class="fa-solid fa-phone"></i>
+                            <span>{{ emp.phone }}</span>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Fallback if no matching records found -->
+        <div id="noResults" class="text-center py-5 d-none">
+            <i class="fa-solid fa-user-slash fa-2x mb-2" style="color: #fb923c;"></i>
+            <h6 class="fw-bold text-dark mt-2 mb-1">No matching employees found</h6>
+            <p class="text-muted small mb-0">Try searching by a different name, department, or employee ID.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Highlight Directory in top header tabs
+    document.querySelectorAll('.dynamic-tab-group li a').forEach(el => {
+        el.classList.remove('active');
+        if (el.getAttribute('href') === '/company_directory') {
+            el.classList.add('active');
+        }
+    });
+
+    // Real-time search filter matching Emp ID, Name, or Department
+    function filterDirectory() {
+        const query = document.getElementById('dirSearchInput').value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#directoryTableBody tr');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const id = row.querySelector('.emp-id-pill').textContent.toLowerCase();
+            const name = row.querySelector('.emp-name').textContent.toLowerCase();
+            const dept = row.querySelector('.emp-dept').textContent.toLowerCase();
+
+            if (id.includes(query) || name.includes(query) || dept.includes(query)) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        const emptyNotice = document.getElementById('noResults');
+        const countBadge = document.getElementById('totalEmpCount');
+
+        if (visibleCount === 0) {
+            emptyNotice.classList.remove('d-none');
+            countBadge.textContent = '0 Members';
+        } else {
+            emptyNotice.classList.add('d-none');
+            countBadge.textContent = `${visibleCount} Members`;
+        }
+    }
+</script>
+{% endblock %}

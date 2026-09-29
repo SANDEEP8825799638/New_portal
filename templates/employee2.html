@@ -1,0 +1,1099 @@
+{% extends "base_template2.html" %}
+
+{% block title %}Employee Profile - Sandeep Vasan{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* 1. Main Workspace Hero Container */
+    .dashboard-hero-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #93c5fd; /* Updated to blue border */
+        box-shadow: 0 6px 24px rgba(11, 99, 229, 0.08); /* Slight blue tint shadow */
+        overflow: hidden;
+        margin-top: 2px;
+    }
+
+    /* Executive header banner using img_2.png background cleanly with no overlapping images */
+    .dashboard-hero-banner {
+        height: 145px;
+        background: url("{{ url_for('static', filename='image/img_9.png') }}") center/cover no-repeat;
+        border-bottom: 1px solid #93c5fd; /* Updated to blue border */
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    /* 2. Expanded Flex Body Wrapper */
+    .dashboard-body-content {
+        padding: 12px 24px 20px 24px !important;
+        display: flex !important;
+        align-items: flex-start;
+        gap: 24px !important;
+        overflow: visible !important;
+    }
+
+    /* 3. Left Column */
+    .profile-card-container {
+        margin-top: -20px !important;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        position: relative;
+        z-index: 10;
+        width: 310px !important;
+        min-width: 310px !important;
+        flex-shrink: 0 !important;
+        overflow: visible !important;
+    }
+
+    .profile-header-card {
+        background: #ffffff;
+        border: 1px solid #93c5fd; /* Updated to blue border */
+        border-radius: 16px;
+        padding: 0 20px 20px 20px;
+        text-align: center;
+        box-shadow: 0 4px 14px rgba(11, 99, 229, 0.08);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: visible !important;
+    }
+
+    .avatar-badge-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-top: -38px;
+        margin-bottom: 12px;
+        z-index: 20;
+    }
+
+    .avatar-badge-orange {
+        width: 84px;
+        height: 84px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #f25c05 0%, #d94e02 100%);
+        color: #ffffff;
+        font-size: 34px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid #ffffff;
+        box-shadow: 0 8px 20px rgba(242, 92, 5, 0.35);
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+        transition: transform 0.15s ease;
+    }
+
+    .avatar-badge-orange:hover {
+        transform: scale(1.03);
+    }
+
+    .avatar-preview-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+    }
+
+    .avatar-upload-btn {
+        position: absolute;
+        bottom: -3px;
+        right: -3px;
+        width: 28px;
+        height: 28px;
+        background: #ffffff;
+        border: 1.5px solid #93c5fd;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0b63e5;
+        font-size: 12px;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        transition: all 0.15s ease;
+        z-index: 25;
+    }
+
+    .avatar-upload-btn:hover {
+        background: #0b63e5;
+        color: #ffffff;
+        border-color: #0b63e5;
+        transform: scale(1.1);
+    }
+
+    .user-full-name {
+        font-size: 20.5px !important;
+        font-weight: 800 !important;
+        color: #0f172a;
+        margin: 0;
+        letter-spacing: -0.25px;
+        line-height: 1.25;
+    }
+
+    .profile-meta-card {
+        background: #ffffff;
+        border: 1px solid #93c5fd; /* Updated to blue border */
+        border-radius: 14px;
+        padding: 12px 18px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 2px 8px rgba(11, 99, 229, 0.04);
+    }
+
+    .meta-icon-tile {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+        flex-shrink: 0;
+    }
+
+    .icon-tile-cyan {
+        background-color: #e0f7f6;
+        color: #00bcd4;
+    }
+
+    .icon-tile-green {
+        background-color: #e8f8f0;
+        color: #22c55e;
+    }
+
+    .icon-tile-purple {
+        background-color: #f3e8ff;
+        color: #a855f7;
+    }
+
+    .meta-card-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .meta-label-tag {
+        font-size: 11.5px !important;
+        font-weight: 800;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        line-height: 1;
+        margin-bottom: 5px;
+    }
+
+    .meta-value-bold {
+        font-size: 16.5px !important;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.25;
+    }
+
+    /* 4. Right Content Pane */
+    .right-content-pane {
+        flex: 1 1 auto;
+        min-width: 0;
+        margin-top: -20px !important;
+        position: relative;
+        z-index: 10;
+    }
+
+    .tab-nav-wrapper {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #93c5fd; /* Updated to blue border */
+        padding: 0 20px;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 14px rgba(11, 99, 229, 0.08);
+    }
+
+    .inner-sub-tabs {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .inner-tab-btn {
+        background: none;
+        border: none;
+        padding: 14px 4px;
+        font-size: 16px !important;
+        font-weight: 700;
+        color: #64748b;
+        cursor: pointer;
+        position: relative;
+        transition: color 0.15s ease;
+    }
+
+    .inner-tab-btn:hover {
+        color: #0b63e5;
+    }
+
+    .inner-tab-btn.active {
+        color: #0b63e5;
+        border-bottom: 3px solid #0b63e5;
+    }
+
+    /* 5. Internal Scroll Card */
+    .details-white-card {
+        background: #ffffff;
+        border: 1px solid #93c5fd; /* Updated to blue border */
+        border-radius: 18px;
+        padding: 24px 28px;
+        box-shadow: 0 2px 10px rgba(11, 99, 229, 0.04);
+        position: relative;
+        overflow-y: auto !important;
+        scrollbar-width: thin;
+        scrollbar-color: #93c5fd #f0f7ff;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .details-white-card::-webkit-scrollbar {
+        width: 6px !important;
+        display: block !important;
+        -webkit-appearance: none;
+    }
+
+    .details-white-card::-webkit-scrollbar-track {
+        background: #f0f7ff;
+        border-radius: 8px;
+        margin: 6px 0;
+    }
+
+    .details-white-card::-webkit-scrollbar-thumb {
+        background: #93c5fd;
+        border-radius: 8px;
+    }
+
+    .details-white-card::-webkit-scrollbar-thumb:hover {
+        background: #0b63e5;
+    }
+
+    .activity-feed-card {
+        background: #f8fafc;
+        border: 1px solid #bfdbfe; /* Soft blue border for internal feed items */
+        border-radius: 14px;
+        padding: 15px 20px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: background 0.15s ease;
+    }
+
+    .activity-feed-card:hover {
+        background: #f0f7ff;
+    }
+
+    .activity-left-group {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .activity-icon-badge {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        flex-shrink: 0;
+    }
+
+    .activity-meta h6 {
+        font-size: 16px !important;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 3px 0;
+    }
+
+    .activity-meta small {
+        font-size: 14px !important;
+        color: #64748b;
+    }
+
+    .activity-time {
+        font-size: 13.5px !important;
+        color: #64748b;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .details-card-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 22px;
+    }
+
+    .details-card-header i {
+        font-size: 22px;
+        color: #0b63e5;
+    }
+
+    .details-card-header h6 {
+        font-size: 18.5px !important;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        letter-spacing: -0.2px;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 52px;
+        row-gap: 22px;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .detail-item .label {
+        font-size: 12.5px !important;
+        font-weight: 800;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        line-height: 1;
+        margin-bottom: 6px;
+    }
+
+    .detail-item .value {
+        font-size: 16.5px !important;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.4;
+    }
+
+    .detail-item .value a {
+        color: #0b63e5;
+        text-decoration: none;
+    }
+
+    .detail-item .value a:hover {
+        text-decoration: underline;
+    }
+
+    .blood-chip {
+        display: inline-block;
+        font-size: 13.5px !important;
+        font-weight: 800;
+        color: #e11d48;
+        background-color: #ffe4e6;
+        border: 1px solid #fecdd3;
+        padding: 3px 12px;
+        border-radius: 8px;
+        width: fit-content;
+        line-height: 1.4;
+    }
+
+    .tab-pane-content {
+        display: none;
+    }
+
+    .tab-pane-content.active-pane {
+        display: block;
+        animation: fadeIn 0.15s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(2px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Files View Specific Styles */
+    .upload-drag-area {
+        border: 2px dashed #93c5fd;
+        border-radius: 16px;
+        padding: 25px 20px;
+        text-align: center;
+        background-color: #f0f7ff;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .upload-drag-area:hover {
+        background-color: #e0f0fe;
+        border-color: #0b63e5;
+    }
+
+    .doc-preview-table th {
+        font-size: 12.5px !important;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: #64748b;
+        font-weight: 800;
+        border-bottom: 2px solid #93c5fd;
+        padding: 12px 14px;
+    }
+
+    .doc-preview-table td {
+        font-size: 15px !important;
+        color: #1e293b;
+        font-weight: 600;
+        padding: 12px 14px;
+        vertical-align: middle;
+    }
+
+    /* 6. Desktop Setup */
+    @media (min-width: 993px) {
+        .dashboard-hero-card {
+            max-height: calc(100vh - var(--topbar-height) - 24px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .details-white-card {
+            max-height: calc(100vh - 325px) !important;
+            min-height: 220px;
+        }
+    }
+
+    /* 7. Mobile Setup */
+    @media (max-width: 992px) {
+        .dashboard-hero-card {
+            height: calc(100vh - var(--topbar-height) - 16px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-hero-banner {
+            height: 165px;
+            align-items: flex-start;
+            padding-top: 26px;
+            padding-left: 15px;
+            padding-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .dashboard-body-content {
+            flex-direction: column !important;
+            padding: 0 12px 14px 12px !important;
+            gap: 12px !important;
+            overflow: visible !important;
+            flex: 1;
+            display: flex !important;
+            min-height: 0 !important;
+        }
+
+        .profile-card-container {
+            width: 100% !important;
+            min-width: 100% !important;
+            margin-top: -36px !important;
+            gap: 10px;
+            overflow: visible !important;
+            flex-shrink: 0;
+        }
+
+        .profile-header-card {
+            padding: 0 14px 16px 14px;
+            min-height: auto;
+            overflow: visible !important;
+        }
+
+        .avatar-badge-wrapper {
+            margin-top: -32px;
+            margin-bottom: 8px;
+        }
+
+        .avatar-badge-orange {
+            width: 74px;
+            height: 74px;
+            font-size: 30px;
+        }
+
+        .profile-meta-card {
+            padding: 12px 16px;
+            gap: 14px;
+        }
+
+        .meta-icon-tile {
+            width: 42px;
+            height: 42px;
+            font-size: 17px;
+        }
+
+        .right-content-pane {
+            width: 100% !important;
+            margin-top: 0 !important;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0 !important;
+        }
+
+        .tab-nav-wrapper {
+            padding: 0 8px;
+            margin-bottom: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            flex-shrink: 0;
+        }
+
+        .tab-nav-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .inner-sub-tabs {
+            gap: 20px;
+            width: 100%;
+        }
+
+        .inner-tab-btn {
+            font-size: 15px !important;
+            padding: 12px 4px;
+            white-space: nowrap;
+        }
+
+        .tab-pane-content.active-pane {
+            display: flex !important;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0 !important;
+        }
+
+        .details-white-card {
+            padding: 20px 18px;
+            max-height: none !important;
+            flex: 1;
+            min-height: 0 !important;
+            overflow-y: auto !important;
+        }
+
+        .details-grid {
+            grid-template-columns: 1fr !important;
+            row-gap: 18px !important;
+        }
+    }
+
+    /* 8. Lightbox Popup Styles */
+    .avatar-lightbox-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(6px);
+        z-index: 10500;
+        align-items: center;
+        justify-content: center;
+        cursor: zoom-out;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .avatar-lightbox-overlay.active {
+        display: flex;
+        opacity: 1;
+    }
+
+    .avatar-lightbox-wrapper {
+        position: relative;
+        cursor: default;
+        max-width: 90vw;
+        max-height: 85vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .avatar-lightbox-preview {
+        max-width: 85vw;
+        max-height: 80vh;
+        border-radius: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        object-fit: contain;
+        transform: scale(0.9);
+        transition: transform 0.2s ease-out;
+    }
+
+    .avatar-lightbox-overlay.active .avatar-lightbox-preview {
+        transform: scale(1);
+    }
+
+    .avatar-lightbox-close {
+        position: absolute;
+        top: -16px;
+        right: -16px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: none;
+        color: #0f172a;
+        font-size: 16px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .avatar-lightbox-close:hover {
+        background: #ef4444;
+        color: #ffffff;
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ================= 1. HOME / PROFILE VIEW ================= -->
+<div id="main-home-view">
+    <div class="dashboard-hero-card">
+        <!-- Banner using img_2.png background cleanly with no overlapping images -->
+        <div class="dashboard-hero-banner"></div>
+
+        <div class="dashboard-body-content">
+            <!-- Left Profile Column -->
+            <div class="profile-card-container">
+                <div class="profile-header-card">
+                    <div class="avatar-badge-wrapper">
+                        <!-- Click badge container to view enlarged popup -->
+                        <div class="avatar-badge-orange" id="avatarBadgeContainer" onclick="openAvatarModal()" title="Click to enlarge image">
+                            <span id="avatarDefaultInitial">S</span>
+                            <img id="avatarImageElement" class="avatar-preview-img" alt="Profile Photo">
+                        </div>
+
+                        <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+
+                        <label for="profilePhotoInput" class="avatar-upload-btn"
+                               data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload Profile Photo">
+                            <i class="fa-solid fa-camera"></i>
+                        </label>
+                    </div>
+
+                    <h5 class="user-full-name">Sandeep Vasan</h5>
+                </div>
+
+                <div class="profile-meta-card">
+                    <div class="meta-icon-tile icon-tile-cyan">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <div class="meta-card-details">
+                        <span class="meta-label-tag">DEPARTMENT</span>
+                        <span class="meta-value-bold">IT and Analytics</span>
+                    </div>
+                </div>
+
+                <div class="profile-meta-card">
+                    <div class="meta-icon-tile icon-tile-green">
+                        <i class="fa-regular fa-calendar-check"></i>
+                    </div>
+                    <div class="meta-card-details">
+                        <span class="meta-label-tag">DATE JOINED</span>
+                        <span class="meta-value-bold">2024-02-01</span>
+                    </div>
+                </div>
+
+                <div class="profile-meta-card">
+                    <div class="meta-icon-tile icon-tile-purple">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <div class="meta-card-details">
+                        <span class="meta-label-tag">MANAGER</span>
+                        <span class="meta-value-bold">OEM00037</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Content Column -->
+            <div class="right-content-pane">
+                <div class="tab-nav-wrapper">
+                    <ul class="inner-sub-tabs">
+                        <li><button type="button" class="inner-tab-btn active" id="tab-btn-announcement" onclick="switchDashboardTab('announcement')">Announcement</button></li>
+                        <li><button type="button" class="inner-tab-btn" id="tab-btn-directory" onclick="switchDashboardTab('directory')">Directory</button></li>
+                        <li><button type="button" class="inner-tab-btn" id="tab-btn-profile" onclick="switchDashboardTab('profile')">Profile</button></li>
+                        <!-- Files Tab triggers view switch -->
+                        <li><button type="button" class="inner-tab-btn" id="tab-btn-files" onclick="switchToFileHub()">Files</button></li>
+                    </ul>
+                </div>
+
+                <!-- 1. TAB: Announcement (Scrolls internally) -->
+                <div class="tab-pane-content active-pane" id="pane-announcement">
+                    <div class="details-white-card">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="fw-bold mb-0 text-dark" style="font-size: 16.5px;">
+                                <i class="fa-solid fa-bullhorn me-1 text-primary"></i> Company Announcements &amp; Updates
+                            </h6>
+                            <span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 12px;">Live Feed</span>
+                        </div>
+
+                        <div class="activity-feed-card">
+                            <div class="activity-left-group">
+                                <div class="activity-icon-badge bg-primary-subtle text-primary">
+                                    <i class="fa-solid fa-bullhorn"></i>
+                                </div>
+                                <div class="activity-meta">
+                                    <h6>Plant Safety Protocol Update</h6>
+                                    <small>New standard operating safety procedures released for all operators</small>
+                                </div>
+                            </div>
+                            <span class="activity-time">10 mins ago</span>
+                        </div>
+
+                        <div class="activity-feed-card">
+                            <div class="activity-left-group">
+                                <div class="activity-icon-badge bg-success-subtle text-success">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                </div>
+                                <div class="activity-meta">
+                                    <h6>Quarterly Town Hall Meeting</h6>
+                                    <small>Join us this Friday at 4:00 PM via video conference link</small>
+                                </div>
+                            </div>
+                            <span class="activity-time">1 hour ago</span>
+                        </div>
+
+                        <div class="activity-feed-card">
+                            <div class="activity-left-group">
+                                <div class="activity-icon-badge bg-warning-subtle text-warning">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                </div>
+                                <div class="activity-meta">
+                                    <h6>Scheduled Maintenance Notice</h6>
+                                    <small>Main batching plant shutdown for routine inspection on Sunday</small>
+                                </div>
+                            </div>
+                            <span class="activity-time">Yesterday</span>
+                        </div>
+
+                        <div class="activity-feed-card mb-0">
+                            <div class="activity-left-group">
+                                <div class="activity-icon-badge bg-info-subtle text-info">
+                                    <i class="fa-solid fa-award"></i>
+                                </div>
+                                <div class="activity-meta">
+                                    <h6>Safety Milestone Reached</h6>
+                                    <small>Plant operations completed 500 accident-free operational days</small>
+                                </div>
+                            </div>
+                            <span class="activity-time">2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. TAB: Directory (Scrolls internally) -->
+                <div class="tab-pane-content" id="pane-directory">
+                    <div class="details-white-card">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="fw-bold mb-0 text-dark" style="font-size: 16.5px;">
+                                <i class="fa-solid fa-address-book me-1 text-primary"></i> Employee Directory &amp; Contacts
+                            </h6>
+                            <span class="badge bg-primary-subtle text-primary border border-primary px-2 py-1" style="font-size: 12px;">
+                                Directory
+                            </span>
+                        </div>
+                        <p class="text-muted mb-0" style="font-size: 15px;">
+                            Quick access to internal department extensions and plant contacts.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 3. TAB: Profile (Scrolls internally) -->
+                <div class="tab-pane-content" id="pane-profile">
+                    <div class="details-white-card">
+                        <div class="details-card-header">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <h6>Employment Details</h6>
+                        </div>
+
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="label">MOBILE PHONE</span>
+                                <span class="value">+1555-0144</span>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="label">EMERGENCY CONTACT</span>
+                                <span class="value">+1555-0199</span>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="label">BUSINESS UNIT</span>
+                                <span class="value">Team Lease</span>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="label">BLOOD GROUP</span>
+                                <div><span class="blood-chip">O+</span></div>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="label">COST CENTER</span>
+                                <span class="value">Chennai HO</span>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="label">WORK EMAIL</span>
+                                <span class="value">
+                                    <a href="mailto:vasansandeep7@gmail.com">vasansandeep7@gmail.com</a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= 2. FILES HUB VIEW ================= -->
+<div id="main-files-view" style="display: none;">
+    <div class="d-flex align-items-center justify-content-between mb-3 mt-1">
+        <div class="d-flex align-items-center gap-3">
+            <button type="button" class="btn btn-outline-secondary px-3 py-2 fw-bold d-flex align-items-center justify-content-center shadow-sm" onclick="switchToDashboard()" title="Back">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div>
+                <h5 class="fw-bold text-dark mb-0" style="font-size: 18.5px;"><i class="fa-solid fa-folder-open text-primary me-2"></i> Documents &amp; Files Hub</h5>
+                <small class="text-muted" style="font-size: 14px;">Upload, manage, and download verified engineering and plant documents</small>
+            </div>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary px-3 py-2 fw-bold d-flex align-items-center gap-2 shadow-sm" onclick="document.getElementById('fileUploadInput').click()">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload Document
+            </button>
+        </div>
+    </div>
+
+    <div class="upload-drag-area mb-4" onclick="document.getElementById('fileUploadInput').click()">
+        <input type="file" id="fileUploadInput" style="display: none;" onchange="handleDocUpload(event)">
+        <i class="fa-solid fa-cloud-arrow-up text-primary fs-1 mb-2"></i>
+        <h6 class="fw-bold text-dark mb-1" style="font-size: 17px;">Click to upload or drag &amp; drop document</h6>
+        <p class="text-muted mb-0" style="font-size: 13.5px;">PDF, DOCX, XLSX, JPG, PNG (Max file size: 25MB)</p>
+    </div>
+
+    <div class="card border border-primary-subtle rounded-3 shadow-none bg-white p-3" style="border-color: #93c5fd !important;">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h6 class="fw-bold text-dark mb-0" style="font-size: 16.5px;">Uploaded Documents Register</h6>
+            <span class="badge bg-light text-secondary border px-2 py-1" id="fileCounterBadge" style="font-size: 12px;">2 Files</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table doc-preview-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Document Name</th>
+                        <th>Type</th>
+                        <th>Upload Date</th>
+                        <th>Size</th>
+                        <th>Status</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="documentsTableBody">
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-file-pdf text-danger fs-5"></i>
+                                <span class="fw-bold" style="font-size: 15px;">Plant_Inward_Verification_Batch0941.pdf</span>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-danger-subtle text-danger" style="font-size: 11.5px;">PDF</span></td>
+                        <td>Today, 02:45 PM</td>
+                        <td>1.8 MB</td>
+                        <td><span class="badge bg-success-subtle text-success" style="font-size: 11.5px;">Verified</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light border py-1 px-2" data-bs-toggle="tooltip" title="Preview PDF">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-light border py-1 px-2 text-primary" data-bs-toggle="tooltip" title="Download File">
+                                <i class="fa-solid fa-download"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-file-excel text-success fs-5"></i>
+                                <span class="fw-bold" style="font-size: 15px;">Raw_Material_Consumption_Summary_Aug2026.xlsx</span>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-success-subtle text-success" style="font-size: 11.5px;">EXCEL</span></td>
+                        <td>Yesterday, 06:15 PM</td>
+                        <td>640 KB</td>
+                        <td><span class="badge bg-success-subtle text-success" style="font-size: 11.5px;">Verified</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light border py-1 px-2" data-bs-toggle="tooltip" title="Preview Spreadsheet">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-light border py-1 px-2 text-primary" data-bs-toggle="tooltip" title="Download File">
+                                <i class="fa-solid fa-download"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Lightbox Modal Overlay -->
+<div id="avatarLightboxModal" class="avatar-lightbox-overlay" onclick="closeAvatarModal()">
+    <div class="avatar-lightbox-wrapper" onclick="event.stopPropagation()">
+        <button type="button" class="avatar-lightbox-close" onclick="closeAvatarModal()" title="Close viewer">&times;</button>
+        <img id="avatarLightboxImg" class="avatar-lightbox-preview" src="" alt="Enlarged Profile View">
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function switchDashboardTab(tabName) {
+        document.querySelectorAll('.inner-tab-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.getElementById('tab-btn-' + tabName);
+        if (activeBtn) activeBtn.classList.add('active');
+
+        document.querySelectorAll('.tab-pane-content').forEach(pane => pane.classList.remove('active-pane'));
+        const activePane = document.getElementById('pane-' + tabName);
+        if (activePane) activePane.classList.add('active-pane');
+    }
+
+    /* Switch views between Profile Dashboard and Files Hub */
+    function switchToFileHub() {
+        document.getElementById('main-home-view').style.display = 'none';
+        document.getElementById('main-files-view').style.display = 'block';
+    }
+
+    function switchToDashboard() {
+        document.getElementById('main-files-view').style.display = 'none';
+        document.getElementById('main-home-view').style.display = 'block';
+    }
+
+    /* Lightbox Modal Functions */
+    function openAvatarModal() {
+        const imgElement = document.getElementById('avatarImageElement');
+        const modal = document.getElementById('avatarLightboxModal');
+        const modalImg = document.getElementById('avatarLightboxImg');
+
+        if (imgElement && imgElement.getAttribute('src')) {
+            modalImg.src = imgElement.src;
+            modal.classList.add('active');
+        }
+    }
+
+    function closeAvatarModal() {
+        const modal = document.getElementById('avatarLightboxModal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAvatarModal();
+        }
+    });
+
+    function handleAvatarUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file (PNG, JPG, JPEG).');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imgElement = document.getElementById('avatarImageElement');
+            const initialText = document.getElementById('avatarDefaultInitial');
+
+            imgElement.src = e.target.result;
+            imgElement.style.display = 'block';
+            initialText.style.display = 'none';
+
+            localStorage.setItem('user_profile_photo', e.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function handleDocUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const fileName = file.name;
+        const fileSize = (file.size / (1024 * 1024)).toFixed(2) + " MB";
+        const fileExt = fileName.split('.').pop().toUpperCase();
+
+        let iconClass = "fa-file-lines text-primary";
+        let badgeClass = "bg-primary-subtle text-primary";
+
+        if (['PDF'].includes(fileExt)) {
+            iconClass = "fa-file-pdf text-danger";
+            badgeClass = "bg-danger-subtle text-danger";
+        } else if (['XLS', 'XLSX', 'CSV'].includes(fileExt)) {
+            iconClass = "fa-file-excel text-success";
+            badgeClass = "bg-success-subtle text-success";
+        } else if (['JPG', 'JPEG', 'PNG'].includes(fileExt)) {
+            iconClass = "fa-file-image text-warning";
+            badgeClass = "bg-warning-subtle text-warning";
+        }
+
+        const tableBody = document.getElementById('documentsTableBody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fa-solid ${iconClass} fs-5"></i>
+                    <span class="fw-bold" style="font-size: 15px;">${fileName}</span>
+                </div>
+            </td>
+            <td><span class="badge ${badgeClass}" style="font-size: 11.5px;">${fileExt}</span></td>
+            <td>Just now</td>
+            <td>${fileSize}</td>
+            <td><span class="badge bg-info-subtle text-info" style="font-size: 11.5px;">Uploaded</span></td>
+            <td class="text-end">
+                <button class="btn btn-sm btn-light border py-1 px-2" data-bs-toggle="tooltip" title="Preview file">
+                    <i class="fa-regular fa-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-light border py-1 px-2 text-primary" data-bs-toggle="tooltip" title="Download file">
+                    <i class="fa-solid fa-download"></i>
+                </button>
+            </td>
+        `;
+
+        tableBody.prepend(newRow);
+
+        const totalCount = tableBody.querySelectorAll('tr').length;
+        const countBadge = document.getElementById('fileCounterBadge');
+        if (countBadge) {
+            countBadge.innerText = totalCount + " Files";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const savedPhoto = localStorage.getItem('user_profile_photo');
+        if (savedPhoto) {
+            const imgElement = document.getElementById('avatarImageElement');
+            const initialText = document.getElementById('avatarDefaultInitial');
+            if (imgElement && initialText) {
+                imgElement.src = savedPhoto;
+                imgElement.style.display = 'block';
+                initialText.style.display = 'none';
+            }
+        }
+    });
+</script>
+{% endblock %}

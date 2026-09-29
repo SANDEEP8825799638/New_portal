@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}Concrete OEM{% endblock %}</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --zoho-dark-nav: #070e1e;
+            --zoho-blue-topbar: #143b82;
+            --zoho-active-blue: #0b63e5;
+            --zoho-text-main: #2c3e50;
+            --zoho-text-muted: #728096;
+            --sidebar-width: 82px;
+            --topbar-height: 52px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box !important;
+        }
+
+        /* Locks outer page scrolling */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh !important;
+            overflow: hidden !important;
+            background-color: #f4f6fa;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--zoho-text-main);
+        }
+
+        /* 1. Left Sidebar */
+        .zoho-icon-sidebar {
+            width: var(--sidebar-width) !important;
+            height: 100vh !important;
+            background-color: var(--zoho-dark-nav) !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            bottom: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            padding: 12px 0 !important;
+            z-index: 1080 !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            scrollbar-width: none !important;
+        }
+
+        .zoho-icon-sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .brand-logo-container {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+            flex-shrink: 0;
+            text-decoration: none;
+            transition: transform 0.15s ease;
+        }
+
+        .brand-logo-container:hover {
+            transform: scale(1.04);
+        }
+
+        .icon-nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .icon-nav-item {
+            width: 100%;
+            text-align: center;
+        }
+
+        .icon-nav-link {
+            color: #94a3b8;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 2px;
+            font-size: 10px;
+            font-weight: 600;
+            gap: 3px;
+            width: 100%;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            text-align: center;
+            line-height: 1.15;
+            border-left: 3px solid transparent;
+        }
+
+        .icon-nav-link i {
+            font-size: 17px;
+        }
+
+        .icon-nav-link:hover,
+        .icon-nav-link.active {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.08);
+            border-left-color: var(--zoho-active-blue);
+        }
+
+        /* 2. Top Header */
+        .zoho-top-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: var(--sidebar-width) !important;
+            right: 0 !important;
+            height: var(--topbar-height) !important;
+            background-color: var(--zoho-blue-topbar) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 0 16px !important;
+            z-index: 1050 !important;
+            color: #ffffff !important;
+        }
+
+        .header-left-title {
+            display: flex !important;
+            align-items: center !important;
+            gap: 16px !important;
+            overflow: hidden !important;
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Concrete OEM Branding on Top Bar */
+        .topbar-brand-title {
+            font-size: 25px !important;
+            font-weight: 850 !important;
+            color: #ffffff !important;
+            text-decoration: none !important;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            letter-spacing: -0.3px;
+            flex-shrink: 0;
+        }
+
+        .zoho-right-tools {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .zoho-header-btn {
+            background: transparent;
+            border: none;
+            color: #cbd5e1;
+            font-size: 14px;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .zoho-header-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+        }
+
+        .user-circle-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #ea580c;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13.5px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .user-circle-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+        }
+
+        /* User Dropdown */
+        .user-profile-menu {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            width: 275px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18), 0 2px 6px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e2e8f0;
+            display: none;
+            flex-direction: column;
+            z-index: 1100;
+        }
+
+        .user-profile-menu.show {
+            display: flex;
+        }
+
+        .user-profile-menu::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 11px;
+            width: 12px;
+            height: 12px;
+            background: #ffffff;
+            transform: rotate(45deg);
+            border-top: 1px solid #e2e8f0;
+            border-left: 1px solid #e2e8f0;
+        }
+
+        .user-menu-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 18px;
+            border-bottom: 1px solid #edf2f7;
+            background: #ffffff;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .user-menu-badges {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .menu-oem-logo {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-gptw-badge {
+            width: 26px;
+            height: 34px;
+            background: #c8102e;
+            color: #ffffff;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 6px;
+            font-weight: 800;
+            line-height: 1.1;
+            padding: 2px 3px;
+            text-align: center;
+            letter-spacing: -0.2px;
+        }
+
+        .menu-user-meta {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .menu-user-name {
+            font-size: 15px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .menu-user-title {
+            font-size: 12.5px;
+            font-style: italic;
+            color: #64748b;
+            margin: 2px 0 0 0;
+        }
+
+        .user-menu-links {
+            list-style: none;
+            padding: 6px 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-menu-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 11px 20px;
+            color: #1e293b;
+            text-decoration: none;
+            font-size: 14.5px;
+            font-weight: 600;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .user-menu-link i {
+            font-size: 17px;
+            color: #334155;
+            width: 20px;
+            text-align: center;
+        }
+
+        .user-menu-link:hover {
+            background: #f8fafc;
+            color: #0b63e5;
+        }
+
+        .user-menu-divider {
+            height: 1px;
+            background: #edf2f7;
+            margin: 4px 0;
+        }
+
+        .user-menu-logout {
+            padding: 12px 20px 14px 20px;
+        }
+
+        .user-menu-logout .user-menu-link {
+            padding: 0;
+            color: #1e293b;
+            font-size: 14.5px;
+            font-weight: 600;
+        }
+
+        .user-menu-logout .user-menu-link:hover {
+            color: #ef4444;
+        }
+
+        /* 3. Main Workspace Container */
+        .zoho-main-container {
+            margin-left: var(--sidebar-width) !important;
+            margin-top: var(--topbar-height) !important;
+            width: calc(100% - var(--sidebar-width)) !important;
+            height: calc(100vh - var(--topbar-height)) !important;
+            padding: 14px 16px !important;
+            overflow: hidden !important;
+        }
+
+        /* Tooltip Overrides */
+        .tooltip {
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+
+        .tooltip-inner {
+            background-color: #0f172a;
+            border-radius: 6px;
+            padding: 5px 10px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+        }
+
+        .bs-tooltip-auto[data-popper-placement^=right] .tooltip-arrow::before,
+        .bs-tooltip-end .tooltip-arrow::before {
+            border-right-color: #0f172a;
+        }
+
+        .bs-tooltip-auto[data-popper-placement^=bottom] .tooltip-arrow::before,
+        .bs-tooltip-bottom .tooltip-arrow::before {
+            border-bottom-color: #0f172a;
+        }
+
+        .bs-tooltip-auto[data-popper-placement^=top] .tooltip-arrow::before,
+        .bs-tooltip-top .tooltip-arrow::before {
+            border-top-color: #0f172a;
+        }
+
+        @media (max-width: 650px) {
+            :root {
+                --sidebar-width: 62px;
+                --topbar-height: 48px;
+            }
+
+            .brand-logo-container {
+                width: 44px;
+                height: 44px;
+                margin-bottom: 8px;
+                border-radius: 12px;
+            }
+
+            .icon-nav-link {
+                padding: 6px 1px;
+                font-size: 8.5px;
+            }
+
+            .icon-nav-link i {
+                font-size: 15px;
+            }
+
+            .zoho-main-container {
+                padding: 10px 8px !important;
+            }
+
+            .user-profile-menu {
+                right: -6px;
+                width: 260px;
+            }
+
+            .topbar-brand-title {
+                font-size: 16px !important;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <aside class="zoho-icon-sidebar" id="sidebarNav">
+        <a href="/" class="brand-logo-container"
+           data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Concrete OEM Home">
+            <svg viewBox="0 0 100 100" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="50,24.8 76.5,44.1 66.4,75.2 33.6,75.2 23.5,44.1" fill="#1b6389" />
+                <polygon points="54,12.5 86.8,36.3 83.2,40.8 52.8,18.7" fill="#2d3748" />
+                <polygon points="90.5,47.7 78,86.2 73,84.5 84.7,48.5" fill="#2d3748" />
+                <polygon points="70.5,91.5 29.5,91.5 30.5,86 69.5,86" fill="#2d3748" />
+                <polygon points="9.5,47.7 15.3,48.5 27,84.5 22,86.2" fill="#2d3748" />
+                <polygon points="46,12.5 47.2,18.7 16.8,40.8 13.2,36.3" fill="#2d3748" />
+            </svg>
+        </a>
+
+        <ul class="icon-nav-list">
+            <li class="icon-nav-item">
+                <a href="/" class="icon-nav-link" id="sidebar-nav-home"
+                   data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Home Dashboard">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li class="icon-nav-item">
+                <a href="/credit_control" class="icon-nav-link" id="nav-credit-control"
+                   data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Credit Control">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                    <span>Credit</span>
+                </a>
+            </li>
+            <li class="icon-nav-item">
+                <a href="/accounts" class="icon-nav-link" id="nav-accounts"
+                   data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Finance & Accounts">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>Accounts</span>
+                </a>
+            </li>
+            <li class="icon-nav-item">
+                <a href="/commercial" class="icon-nav-link" id="nav-commercial"
+                   data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Commercial Operations">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <span>Comml</span>
+                </a>
+            </li>
+            <li class="icon-nav-item">
+                <a href="/attendance" class="icon-nav-link" id="nav-hr"
+                   data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="HR & Attendance">
+                    <i class="fa-solid fa-user-group"></i>
+                    <span>HR</span>
+                </a>
+            </li>
+            <li class="icon-nav-item">
+                <a href="/it_dashboard" class="icon-nav-link" id="nav-it"
+                   data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="IT Infrastructure">
+                    <i class="fa-solid fa-laptop-code"></i>
+                    <span>IT</span>
+                </a>
+            </li>
+            <li class="icon-nav-item">
+                <a href="/invoice_crm" class="icon-nav-link" id="nav-sales"
+                   data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Sales CRM & Billing">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Sales</span>
+                </a>
+            </li>
+            <li class="icon-nav-item">
+                <a href="/daily_qc_dashboard" class="icon-nav-link" id="nav-technical"
+                   data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Technical & Quality Control">
+                    <i class="fa-solid fa-gears"></i>
+                    <span>Tech</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <header class="zoho-top-header">
+        <div class="header-left-title">
+            <a href="/" class="topbar-brand-title">Concrete OEM</a>
+        </div>
+
+        <div class="zoho-right-tools">
+            <button type="button" class="zoho-header-btn"
+                    data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Notifications">
+                <i class="fa-regular fa-bell"></i>
+            </button>
+
+            <div class="user-circle-btn" id="userMenuBtn" onclick="toggleUserProfileMenu(event)"
+                 data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Account Menu">
+                S
+            </div>
+
+            <div class="user-profile-menu" id="userProfileDropdown">
+                <div class="user-menu-header">
+                    <div class="user-menu-badges">
+                        <div class="menu-oem-logo">
+                            <svg viewBox="0 0 100 100" width="26" height="26" xmlns="http://www.w3.org/2000/svg">
+                                <polygon points="50,24.8 76.5,44.1 66.4,75.2 33.6,75.2 23.5,44.1" fill="#1b6389" />
+                                <polygon points="54,12.5 86.8,36.3 83.2,40.8 52.8,18.7" fill="#2d3748" />
+                                <polygon points="90.5,47.7 78,86.2 73,84.5 84.7,48.5" fill="#2d3748" />
+                                <polygon points="70.5,91.5 29.5,91.5 30.5,86 69.5,86" fill="#2d3748" />
+                                <polygon points="9.5,47.7 15.3,48.5 27,84.5 22,86.2" fill="#2d3748" />
+                                <polygon points="46,12.5 47.2,18.7 16.8,40.8 13.2,36.3" fill="#2d3748" />
+                            </svg>
+                        </div>
+                        <div class="menu-gptw-badge">
+                            <span>Great<br>Place<br>To<br>Work.</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-user-meta">
+                        <h6 class="menu-user-name">Sandeep Vasan</h6>
+                        <div class="menu-user-title">Plant Operations</div>
+                    </div>
+                </div>
+
+                <ul class="user-menu-links">
+                    <li class="user-menu-item">
+                        <a href="/" class="user-menu-link">
+                            <i class="fa-solid fa-circle-user"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                    <li class="user-menu-item">
+                        <a href="/org_setup" class="user-menu-link">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="user-menu-divider"></div>
+
+                <div class="user-menu-logout">
+                    <a href="/logout" class="user-menu-link">
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="zoho-main-container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function initTooltips(scope = document) {
+            const tooltipTriggerList = scope.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach(el => {
+                if (!bootstrap.Tooltip.getInstance(el)) {
+                    new bootstrap.Tooltip(el, {
+                        trigger: 'hover',
+                        boundary: 'window'
+                    });
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            initTooltips();
+        });
+
+        function toggleUserProfileMenu(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('userProfileDropdown');
+            dropdown.classList.toggle('show');
+
+            const userBtn = document.getElementById('userMenuBtn');
+            const tooltipInstance = bootstrap.Tooltip.getInstance(userBtn);
+            if (tooltipInstance) tooltipInstance.hide();
+        }
+
+        function closeUserProfileMenu() {
+            const dropdown = document.getElementById('userProfileDropdown');
+            if (dropdown) dropdown.classList.remove('show');
+        }
+
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userProfileDropdown');
+            const btn = document.getElementById('userMenuBtn');
+            if (dropdown && dropdown.classList.contains('show')) {
+                if (!dropdown.contains(event.target) && event.target !== btn) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,293 @@
+{% extends 'base_template2.html' %}
+
+{% block title %}Announcements - Concrete OEM{% endblock %}
+
+{% block extra_css %}
+<style>
+    .zoho-main-container {
+        overflow-y: auto !important;
+    }
+
+    .announcements-wrapper {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        padding: 24px;
+        min-height: calc(100vh - var(--topbar-height) - 30px);
+    }
+
+    .ann-header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .btn-back-home {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        background-color: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        color: #475569;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.15s ease;
+        flex-shrink: 0;
+    }
+
+    .btn-back-home:hover {
+        background-color: #0b63e5;
+        border-color: #0b63e5;
+        color: #ffffff;
+        transform: translateX(-2px);
+    }
+
+    .ann-heading h4 {
+        font-size: 18px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+    }
+
+    .ann-heading p {
+        font-size: 12.5px;
+        color: #64748b;
+        margin: 3px 0 0 0;
+    }
+
+    /* Category Filter Badges */
+    .filter-pills {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+    }
+
+    .pill-btn {
+        padding: 6px 14px;
+        font-size: 12.5px;
+        font-weight: 600;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        background-color: #f8fafc;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .pill-btn:hover,
+    .pill-btn.active {
+        background-color: var(--zoho-active-blue);
+        color: #ffffff;
+        border-color: var(--zoho-active-blue);
+    }
+
+    /* Cards */
+    .ann-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .ann-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 20px;
+        transition: box-shadow 0.15s ease, border-color 0.15s ease;
+        background: #ffffff;
+        position: relative;
+    }
+
+    .ann-card:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
+
+    .ann-card.urgent {
+        border-left: 4px solid #ef4444;
+        background: #fffcfc;
+    }
+
+    .ann-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+        font-size: 12px;
+        color: #64748b;
+        flex-wrap: wrap;
+    }
+
+    .badge-tag {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 5px;
+    }
+
+    .tag-safety { background: #fee2e2; color: #dc2626; }
+    .tag-hr { background: #e0f2fe; color: #0369a1; }
+    .tag-company { background: #fef3c7; color: #b45309; }
+    .tag-it { background: #ede9fe; color: #6d28d9; }
+
+    .ann-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 8px;
+    }
+
+    .ann-summary {
+        font-size: 13.5px;
+        color: #334155;
+        line-height: 1.5;
+        margin-bottom: 12px;
+    }
+
+    .ann-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #f1f5f9;
+        padding-top: 10px;
+        font-size: 12.5px;
+    }
+
+    .ann-author {
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .ann-attachment {
+        color: #0b63e5;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .ann-attachment:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="announcements-wrapper">
+    <!-- Header with Back Button -->
+    <div class="ann-header-section">
+        <div class="d-flex align-items-center gap-3">
+            <a href="/" class="btn-back-home" title="Back to Dashboard">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div class="ann-heading">
+                <h4>Company Announcements</h4>
+                <p>Broadcasts, plant maintenance advisories, and organization updates</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Filter Pills -->
+    <div class="filter-pills">
+        <button class="pill-btn active" onclick="filterCategory('all', this)">All</button>
+        <button class="pill-btn" onclick="filterCategory('Safety & Operations', this)">Safety & Operations</button>
+        <button class="pill-btn" onclick="filterCategory('HR Notice', this)">HR Notices</button>
+        <button class="pill-btn" onclick="filterCategory('Company News', this)">Company News</button>
+        <button class="pill-btn" onclick="filterCategory('IT Updates', this)">IT Updates</button>
+    </div>
+
+    <!-- Announcement Cards List -->
+    <div class="ann-list" id="announcementsList">
+        {% for item in announcements %}
+        <div class="ann-card {% if item.urgent %}urgent{% endif %}" data-category="{{ item.category }}">
+            <div class="ann-meta">
+                {% if item.category == 'Safety & Operations' %}
+                    <span class="badge-tag tag-safety"><i class="fa-solid fa-shield-halved me-1"></i> {{ item.category }}</span>
+                {% elif item.category == 'HR Notice' %}
+                    <span class="badge-tag tag-hr"><i class="fa-solid fa-user-group me-1"></i> {{ item.category }}</span>
+                {% elif item.category == 'Company News' %}
+                    <span class="badge-tag tag-company"><i class="fa-solid fa-bullhorn me-1"></i> {{ item.category }}</span>
+                {% else %}
+                    <span class="badge-tag tag-it"><i class="fa-solid fa-laptop-code me-1"></i> {{ item.category }}</span>
+                {% endif %}
+
+                {% if item.urgent %}
+                    <span class="badge bg-danger text-white"><i class="fa-solid fa-triangle-exclamation me-1"></i> Urgent</span>
+                {% endif %}
+
+                <span><i class="fa-regular fa-clock me-1"></i> {{ item.date }}</span>
+            </div>
+
+            <div class="ann-title">{{ item.title }}</div>
+            <div class="ann-summary">{{ item.summary }}</div>
+
+            <div class="ann-footer">
+                <div class="ann-author">
+                    <i class="fa-solid fa-user-pen me-1"></i> Posted by: <strong>{{ item.author }}</strong>
+                </div>
+
+                {% if item.attachment %}
+                <a href="#" class="ann-attachment">
+                    <i class="fa-solid fa-paperclip"></i>
+                    <span>{{ item.attachment }}</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div id="noAnnouncements" class="text-center py-5 d-none">
+        <i class="fa-regular fa-bell-slash fa-2x text-secondary mb-2"></i>
+        <p class="text-muted small mb-0">No announcements found under this category.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Keep Announcements tab highlighted in top nav
+    document.querySelectorAll('.dynamic-tab-group li a').forEach(el => {
+        el.classList.remove('active');
+        if (el.getAttribute('href') === '/announcements') {
+            el.classList.add('active');
+        }
+    });
+
+    // Category filter logic
+    function filterCategory(category, btnElement) {
+        document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+
+        const cards = document.querySelectorAll('.ann-card');
+        let count = 0;
+
+        cards.forEach(card => {
+            const cardCat = card.getAttribute('data-category');
+            if (category === 'all' || cardCat === category) {
+                card.style.display = 'block';
+                count++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        const noData = document.getElementById('noAnnouncements');
+        if (count === 0) {
+            noData.classList.remove('d-none');
+        } else {
+            noData.classList.add('d-none');
+        }
+    }
+</script>
+{% endblock %}
